@@ -4,10 +4,10 @@ module URLSearchParams = {
   @new
   external make: string => t = "URLSearchParams"
 
-  @return(nullable) @bs.send
+  @return(nullable) @send
   external get: (t, string) => option<string> = "get"
 
-  @bs.send
+  @send
   external forEach: (t, (string, string) => unit) => unit = "forEach"
 
   let toArray = (t, ()) => {

@@ -1,163 +1,20 @@
-open Belt
+@module("./favicon.ico")
+external favicon: string = "default"
 
-module Color = ReshowcaseUi__Layout.Color
-module Gap = ReshowcaseUi__Layout.Gap
-module Border = ReshowcaseUi__Layout.Border
-module BorderRadius = ReshowcaseUi__Layout.BorderRadius
-module FontSize = ReshowcaseUi__Layout.FontSize
-module PaddedBox = ReshowcaseUi__Layout.PaddedBox
-module Stack = ReshowcaseUi__Layout.Stack
-module Sidebar = ReshowcaseUi__Layout.Sidebar
-module Icon = ReshowcaseUi__Layout.Icon
-module Collapsible = ReshowcaseUi__Layout.Collapsible
-module HighlightTerms = ReshowcaseUi__HighlightTerms
-module URLSearchParams = ReshowcaseUi__Bindings.URLSearchParams
-module Window = ReshowcaseUi__Bindings.Window
-module LocalStorage = ReshowcaseUi__Bindings.LocalStorage
+open Belt
+type context = {controls: Controls.demoUnitProps}
+
+module Gap = Theme.Gap
+module Color = Theme.Color
+module Border = Theme.Border
+module BorderRadius = Theme.BorderRadius
+module FontSize = Theme.FontSize
+module URLSearchParams = Bindings.URLSearchParams
+module Window = Bindings.Window
+module LocalStorage = Bindings.LocalStorage
 module Array = Js.Array2
 
-type responsiveMode =
-  | Mobile
-  | Desktop
-
-module TopPanel = {
-  module Styles = {
-    let panel = ReactDOM.Style.make(
-      ~display="flex",
-      ~justifyContent="flex-end",
-      ~borderBottom=Border.default,
-      (),
-    )
-
-    let buttonGroup = ReactDOM.Style.make(
-      ~overflow="hidden",
-      ~display="flex",
-      ~flexDirection="row",
-      ~alignItems="stretch",
-      ~borderRadius=BorderRadius.default,
-      (),
-    )
-
-    let button = ReactDOM.Style.make(
-      ~height="32px",
-      ~width="48px",
-      ~cursor="pointer",
-      ~fontSize=FontSize.sm,
-      ~backgroundColor=Color.lightGray,
-      ~color=Color.darkGray,
-      ~border="none",
-      ~margin="0",
-      ~padding="0",
-      ~display="flex",
-      ~alignItems="center",
-      ~justifyContent="center",
-      (),
-    )
-
-    let squareButton = button->ReactDOM.Style.combine(ReactDOM.Style.make(~width="32px", ()))
-
-    let activeButton =
-      button->ReactDOM.Style.combine(
-        ReactDOM.Style.make(~backgroundColor=Color.blue, ~color=Color.white, ()),
-      )
-
-    let middleSection = ReactDOM.Style.make(
-      ~display="flex",
-      ~flex="1",
-      ~justifyContent="center",
-      (),
-    )
-
-    let rightSection = ReactDOM.Style.make(~display="flex", ())
-  }
-
-  @react.component
-  let make = (
-    ~isSidebarHidden: bool,
-    ~responsiveMode: responsiveMode,
-    ~onRightSidebarToggle: unit => unit,
-    ~onSetResponsiveMode: (responsiveMode => responsiveMode) => unit,
-  ) => {
-    <div style=Styles.panel>
-      <div style=Styles.rightSection />
-      <div style=Styles.middleSection>
-        <PaddedBox gap=Md>
-          <div style=Styles.buttonGroup>
-            <button
-              title={"Show in desktop mode"}
-              style={responsiveMode == Desktop ? Styles.activeButton : Styles.button}
-              onClick={event => {
-                event->ReactEvent.Mouse.preventDefault
-                onSetResponsiveMode(_ => Desktop)
-              }}>
-              {Icon.desktop}
-            </button>
-            <button
-              title={"Show in mobile mode"}
-              style={responsiveMode == Mobile ? Styles.activeButton : Styles.button}
-              onClick={event => {
-                event->ReactEvent.Mouse.preventDefault
-                onSetResponsiveMode(_ => Mobile)
-              }}>
-              {Icon.mobile}
-            </button>
-          </div>
-        </PaddedBox>
-      </div>
-      <div style=Styles.rightSection>
-        <PaddedBox gap=Md>
-          <div style=Styles.buttonGroup>
-            <button
-              title={isSidebarHidden ? "Show sidebar" : "Hide sidebar"}
-              style=Styles.squareButton
-              onClick={event => {
-                event->ReactEvent.Mouse.preventDefault
-                onRightSidebarToggle()
-              }}>
-              <div
-                style={ReactDOM.Style.make(
-                  ~transition="200ms ease-in-out transform",
-                  ~transform=isSidebarHidden ? "rotate(0)" : "rotate(180deg)",
-                  (),
-                )}>
-                {Icon.sidebar}
-              </div>
-            </button>
-          </div>
-        </PaddedBox>
-      </div>
-    </div>
-  }
-}
-
 let rightSidebarId = "rightSidebar"
-
-module Link = {
-  @react.component
-  let make = (~href, ~text: React.element, ~style=?, ~activeStyle=?) => {
-    let url = RescriptReactRouter.useUrl()
-    let path = String.concat("/", url.path)
-    let isActive = (path ++ ("?" ++ url.search))->Js.String2.endsWith(href)
-    <a
-      href
-      onClick={event =>
-        switch (ReactEvent.Mouse.metaKey(event), ReactEvent.Mouse.ctrlKey(event)) {
-        | (false, false) =>
-          ReactEvent.Mouse.preventDefault(event)
-          RescriptReactRouter.push(href)
-        | _ => ()
-        }}
-      style=?{switch (style, activeStyle, isActive) {
-      | (Some(style), _, false) => Some(style)
-      | (Some(style), None, true) => Some(style)
-      | (Some(style), Some(activeStyle), true) => Some(ReactDOM.Style.combine(style, activeStyle))
-      | (_, Some(activeStyle), true) => Some(activeStyle)
-      | _ => None
-      }}>
-      text
-    </a>
-  }
-}
 
 module DemoListSidebar = {
   module Styles = {
@@ -179,7 +36,25 @@ module DemoListSidebar = {
       (),
     )
 
+    let button = ReactDOM.Style.make(
+      ~height="32px",
+      ~width="48px",
+      ~cursor="pointer",
+      ~fontSize=FontSize.sm,
+      ~backgroundColor=Color.lightGray,
+      ~color=Color.darkGray,
+      ~border="none",
+      ~margin="0",
+      ~padding="0",
+      ~display="flex",
+      ~alignItems="center",
+      ~justifyContent="center",
+      (),
+    )
+
     let activeLink = ReactDOM.Style.make(~backgroundColor=Color.midGray, ())
+
+    let introLink = ReactDOM.Style.make(~padding=`${Gap.xs} ${Gap.md}`, ())
   }
 
   module SearchInput = {
@@ -231,15 +106,15 @@ module DemoListSidebar = {
     @react.component
     let make = (~value, ~onChange, ~onClear) =>
       <div style=Styles.inputWrapper>
-        <input style=Styles.input placeholder="Filter" value onChange />
+        <input style=Styles.input placeholder="Search" value onChange />
         {value == "" ? React.null : <ClearButton onClear />}
       </div>
   }
 
   let renderMenu = (
-    ~isCategoriesCollapsedByDefault: bool,
     ~urlSearchParams: URLSearchParams.t,
     ~searchString,
+    ~sortDogs: option<((string, Entity.t), (string, Entity.t)) => int>,
     demos: Demos.t,
   ) => {
     let rec renderMenu = (
@@ -248,64 +123,81 @@ module DemoListSidebar = {
       ~categoryQuery,
       demos: Demos.t,
     ) => {
-      let demos = demos->Js.Dict.entries
-
-      demos
-      ->Array.map(((entityName, entity)) => {
-        let searchMatchingTerms = HighlightTerms.getMatchingTerms(~searchString, ~entityName)
-        let isEntityNameMatchSearch = searchString == "" || searchMatchingTerms->Belt.Array.size > 0
-        switch entity {
-        | Demo(_) =>
-          if isEntityNameMatchSearch || parentCategoryMatchedSearch {
-            <Link
-              key={entityName}
-              style=Styles.link
-              activeStyle=Styles.activeLink
-              href={"?demo=" ++ entityName->Js.Global.encodeURIComponent ++ categoryQuery}
-              text={<HighlightTerms text=entityName terms=searchMatchingTerms />}
-            />
-          } else {
-            React.null
+      let renderedDemos =
+        demos
+        ->Js.Dict.entries
+        ->Belt.SortArray.stableSortBy(((a, aEntity), (b, bEntity)) => {
+          switch sortDogs {
+          | Some(sortDogs) => sortDogs((a, aEntity), (b, bEntity))
+          | None => 0
           }
-        | Category(demos) =>
-          if (
-            isEntityNameMatchSearch ||
-            Demos.isNestedEntityMatchSearch(demos, searchString) ||
-            parentCategoryMatchedSearch
-          ) {
-            let levelStr = Int.toString(nestingLevel)
-            let categoryQueryKey = `category${levelStr}`
-            let isCategoryInQuery = switch urlSearchParams->URLSearchParams.get(categoryQueryKey) {
-            | Some(value) if value->Js.Global.decodeURIComponent == entityName => true
-            | Some(_) | None => false
-            }
-
-            <PaddedBox key={entityName} padding=LeftRight>
-              <Collapsible
-                title={<div style=Styles.categoryName>
+        })
+        ->Array.map(((entityName, entity)) => {
+          let searchMatchingTerms = HighlightTerms.getMatchingTerms(~searchString, ~entityName)
+          let isEntityNameMatchSearch =
+            searchString == "" || searchMatchingTerms->Belt.Array.size > 0
+          switch entity {
+          | Demo(_) =>
+            if isEntityNameMatchSearch || parentCategoryMatchedSearch {
+              <Link
+                key={entityName}
+                style=Styles.link
+                activeStyle=Styles.activeLink
+                href={"/?dog=" ++ entityName->Js.Global.encodeURIComponent ++ categoryQuery}
+                text={<div
+                  style={ReactDOM.Style.make(~display="flex", ~alignItems="center", ())}
+                  src={favicon}>
+                  <img
+                    style={ReactDOM.Style.make(~width="12px", ~marginRight="4px", ())} src={favicon}
+                  />
                   <HighlightTerms text=entityName terms=searchMatchingTerms />
                 </div>}
-                isDefaultOpen={isCategoryInQuery || !isCategoriesCollapsedByDefault}
-                isForceOpen={searchString != ""}>
-                <PaddedBox padding=LeftRight>
-                  {renderMenu(
-                    ~parentCategoryMatchedSearch=isEntityNameMatchSearch ||
-                    parentCategoryMatchedSearch,
-                    ~nestingLevel=nestingLevel + 1,
-                    ~categoryQuery=`&category${levelStr}=` ++
-                    entityName->Js.Global.encodeURIComponent ++
-                    categoryQuery,
-                    demos,
-                  )}
-                </PaddedBox>
-              </Collapsible>
-            </PaddedBox>
-          } else {
-            React.null
+              />
+            } else {
+              React.null
+            }
+          | Category(demos) =>
+            if (
+              isEntityNameMatchSearch ||
+              Demos.isNestedEntityMatchSearch(demos, searchString) ||
+              parentCategoryMatchedSearch
+            ) {
+              let levelStr = Int.toString(nestingLevel)
+              let categoryQueryKey = `category${levelStr}`
+              let isCategoryInQuery = switch urlSearchParams->URLSearchParams.get(
+                categoryQueryKey,
+              ) {
+              | Some(value) if value->Js.Global.decodeURIComponent == entityName => true
+              | Some(_) | None => false
+              }
+
+              <PaddedBox key={entityName} padding=LeftRight>
+                <Collapsible
+                  title={<div style=Styles.categoryName>
+                    <HighlightTerms text=entityName terms=searchMatchingTerms />
+                  </div>}
+                  initialValue={isCategoryInQuery}>
+                  <PaddedBox padding=LeftRight>
+                    {renderMenu(
+                      ~parentCategoryMatchedSearch=isEntityNameMatchSearch ||
+                      parentCategoryMatchedSearch,
+                      ~nestingLevel=nestingLevel + 1,
+                      ~categoryQuery=`&category${levelStr}=` ++
+                      entityName->Js.Global.encodeURIComponent ++
+                      categoryQuery,
+                      demos,
+                    )}
+                  </PaddedBox>
+                </Collapsible>
+              </PaddedBox>
+            } else {
+              React.null
+            }
           }
-        }
-      })
-      ->React.array
+        })
+        ->React.array
+
+      <> {renderedDemos} </>
     }
 
     renderMenu(
@@ -318,40 +210,31 @@ module DemoListSidebar = {
 
   @react.component
   let make = (
+    ~logo: option<string>,
+    ~intro: bool,
+    ~sortDogs: option<((string, Entity.t), (string, Entity.t)) => int>,
     ~urlSearchParams: URLSearchParams.t,
     ~demos: Demos.t,
-    ~isCategoriesCollapsedByDefault: bool,
-    ~onToggleCollapsedCategoriesByDefault: unit => unit,
   ) => {
     let (filterValue, setFilterValue) = React.useState(() => None)
+    let searchString = filterValue->Option.mapWithDefault("", Js.String2.toLowerCase)
+
     <Sidebar fullHeight=true>
       <PaddedBox gap=Md border=Bottom>
-        <div style={ReactDOM.Style.make(~display="flex", ~alignItems="center", ~gridGap="5px", ())}>
-          <button
+        {switch logo {
+        | Some(source) =>
+          <img
             style={ReactDOM.Style.make(
-              ~height="32px",
-              ~minWidth="32px",
-              ~width="32px",
-              ~cursor="pointer",
-              ~fontSize=FontSize.sm,
-              ~backgroundColor=Color.white,
-              ~color=Color.darkGray,
-              ~border=Border.default,
-              ~borderRadius=BorderRadius.default,
-              ~margin="0",
-              ~padding="0",
-              ~display="flex",
-              ~alignItems="center",
-              ~justifyContent="center",
+              ~maxHeight="70px",
+              ~maxWidth="100%",
+              ~marginBottom="10px",
               (),
             )}
-            title={"Toggle default collapsed categories"}
-            onClick={event => {
-              event->ReactEvent.Mouse.preventDefault
-              onToggleCollapsedCategoriesByDefault()
-            }}>
-            {isCategoriesCollapsedByDefault ? Icon.categoryCollapsed : Icon.categoryExpanded}
-          </button>
+            src={source}
+          />
+        | None => React.null
+        }}
+        <div style={ReactDOM.Style.make(~display="flex", ~alignItems="center", ~gridGap="5px", ())}>
           <SearchInput
             value={filterValue->Option.getWithDefault("")}
             onChange={event => {
@@ -363,12 +246,22 @@ module DemoListSidebar = {
         </div>
       </PaddedBox>
       <PaddedBox gap=Xxs>
-        {renderMenu(
-          ~isCategoriesCollapsedByDefault,
-          ~searchString=filterValue->Option.mapWithDefault("", Js.String2.toLowerCase),
-          ~urlSearchParams,
-          demos,
-        )}
+        {switch intro {
+        | true =>
+          <div style=Styles.introLink>
+            <Link
+              style=Styles.link
+              activeStyle=Styles.activeLink
+              href={"/"}
+              text={<HighlightTerms
+                text="Intro"
+                terms={HighlightTerms.getMatchingTerms(~searchString, ~entityName="intro")}
+              />}
+            />
+          </div>
+        | false => React.null
+        }}
+        {renderMenu(~searchString, ~urlSearchParams, ~sortDogs, demos)}
       </PaddedBox>
     </Sidebar>
   }
@@ -430,7 +323,10 @@ module DemoUnitSidebar = {
     let make = (~propName: string, ~children) => {
       <label style=Styles.label>
         <PaddedBox>
-          <Stack> <div style=Styles.labelText> {propName->React.string} </div> children </Stack>
+          <Stack>
+            <div style=Styles.labelText> {propName->React.string} </div>
+            children
+          </Stack>
         </PaddedBox>
       </label>
     }
@@ -438,10 +334,10 @@ module DemoUnitSidebar = {
 
   @react.component
   let make = (
-    ~strings: Map.String.t<(Configs.stringConfig, string, option<array<(string, string)>>)>,
-    ~ints: Map.String.t<(Configs.numberConfig<int>, int)>,
-    ~floats: Map.String.t<(Configs.numberConfig<float>, float)>,
-    ~bools: Map.String.t<(Configs.boolConfig, bool)>,
+    ~strings: Map.String.t<(Controls.stringConfig, string, option<array<(string, string)>>)>,
+    ~ints: Map.String.t<(Controls.numberConfig<int>, int)>,
+    ~floats: Map.String.t<(Controls.numberConfig<float>, float)>,
+    ~bools: Map.String.t<(Controls.boolConfig, bool)>,
     ~onStringChange,
     ~onIntChange,
     ~onFloatChange,
@@ -465,15 +361,14 @@ module DemoUnitSidebar = {
             | Some(options) =>
               <select
                 style=Styles.select
+                value={value}
                 onChange={event => {
                   let value = (event->ReactEvent.Form.target)["value"]
                   onStringChange(propName, value)
                 }}>
                 {options
                 ->Array.map(((key, optionValue)) => {
-                  <option key selected={value == optionValue} value={optionValue}>
-                    {key->React.string}
-                  </option>
+                  <option key value={optionValue}> {key->React.string} </option>
                 })
                 ->React.array}
               </select>
@@ -487,9 +382,9 @@ module DemoUnitSidebar = {
           <PropBox key=propName propName>
             <input
               type_="number"
-              min=j`$min`
-              max=j`$max`
-              value=j`$value`
+              min={Belt.Int.toString(min)}
+              max={Belt.Int.toString(max)}
+              value={Belt.Int.toString(value)}
               style=Styles.textInput
               onChange={event =>
                 onIntChange(propName, (event->ReactEvent.Form.target)["value"]->int_of_string)}
@@ -503,9 +398,9 @@ module DemoUnitSidebar = {
           <PropBox key=propName propName>
             <input
               type_="number"
-              min=j`$min`
-              max=j`$max`
-              value=j`$value`
+              min={`${min->Belt.Float.toString}`}
+              max={`${max->Belt.Float.toString}`}
+              value={`${value->Belt.Float.toString}`}
               style=Styles.textInput
               onChange={event =>
                 onFloatChange(propName, (event->ReactEvent.Form.target)["value"]->float_of_string)}
@@ -532,10 +427,10 @@ module DemoUnitSidebar = {
 
 module DemoUnit = {
   type state = {
-    strings: Map.String.t<(Configs.stringConfig, string, option<array<(string, string)>>)>,
-    ints: Map.String.t<(Configs.numberConfig<int>, int)>,
-    floats: Map.String.t<(Configs.numberConfig<float>, float)>,
-    bools: Map.String.t<(Configs.boolConfig, bool)>,
+    strings: Map.String.t<(Controls.stringConfig, string, option<array<(string, string)>>)>,
+    ints: Map.String.t<(Controls.numberConfig<int>, int)>,
+    floats: Map.String.t<(Controls.numberConfig<float>, float)>,
+    bools: Map.String.t<(Controls.boolConfig, bool)>,
   }
 
   type action =
@@ -550,25 +445,24 @@ module DemoUnit = {
       ~display="flex",
       ~alignItems="stretch",
       ~flexDirection="row",
+      ~padding="20px",
       (),
     )
     let contents =
-      ReactDOM.Style.make(
-        ~flexGrow="1",
-        ~overflowY="auto",
-        ~display="flex",
-        ~flexDirection="column",
-        ~alignItems="center",
-        ~justifyContent="center",
-        (),
-      )->ReactDOM.Style.unsafeAddProp("WebkitOverflowScrolling", "touch")
+      ReactDOM.Style.make(~flexGrow="1", ~overflowY="auto", ())->ReactDOM.Style.unsafeAddProp(
+        "WebkitOverflowScrolling",
+        "touch",
+      )
   }
 
   let getRightSidebarElement = (): option<Dom.element> =>
     Window.window["parent"]["document"]["getElementById"](. rightSidebarId)->Js.Nullable.toOption
 
   @react.component
-  let make = (~demoUnit: Configs.demoUnitProps => React.element) => {
+  let make = (
+    ~demoUnit: Controls.demoUnitProps => React.element,
+    ~applyDecorators: (React.element, context) => React.element,
+  ) => {
     let (parentWindowRightSidebarElem, setParentWindowRightSidebarElem) = React.useState(() => None)
 
     React.useEffect0(() => {
@@ -629,7 +523,7 @@ module DemoUnit = {
         let ints = ref(Map.String.empty)
         let floats = ref(Map.String.empty)
         let bools = ref(Map.String.empty)
-        let props: Configs.demoUnitProps = {
+        let props: Controls.demoUnitProps = {
           string: (name, ~options=?, config) => {
             strings := strings.contents->Map.String.set(name, (config, config, options))
             config
@@ -656,7 +550,7 @@ module DemoUnit = {
         }
       },
     )
-    let props: Configs.demoUnitProps = {
+    let props: Controls.demoUnitProps = {
       string: (name, ~options as _=?, _config) => {
         let (_, value, _) = state.strings->Map.String.getExn(name)
         value
@@ -674,8 +568,9 @@ module DemoUnit = {
         value
       },
     }
+
     <div name="DemoUnit" style=Styles.container>
-      <div style=Styles.contents> {demoUnit(props)} </div>
+      <div style=Styles.contents> {applyDecorators(demoUnit(props), {controls: props})} </div>
       {switch parentWindowRightSidebarElem {
       | None => React.null
       | Some(element) =>
@@ -706,8 +601,8 @@ module DemoUnitFrame = {
       ~alignItems="center",
       ~backgroundColor={
         switch responsiveMode {
-        | Mobile => Color.midGray
-        | Desktop => Color.white
+        | TopPanel.Mobile => Color.midGray
+        | TopPanel.Desktop => Color.white
         }
       },
       ~height="1px",
@@ -760,18 +655,12 @@ module App = {
       (),
     )
     let main = ReactDOM.Style.make(~flexGrow="1", ~display="flex", ~flexDirection="column", ())
-    let empty = ReactDOM.Style.make(
-      ~flexGrow="1",
-      ~display="flex",
-      ~flexDirection="column",
-      ~alignItems="center",
-      ~justifyContent="center",
-      (),
-    )
+    let intro = ReactDOM.Style.make(~flexGrow="1", ~display="flex", ~justifyContent="center", ())
     let emptyText = ReactDOM.Style.make(
       ~fontSize=FontSize.lg,
       ~color=Color.black40a,
-      ~textAlign="center",
+      ~display="flex",
+      ~alignItems="center",
       (),
     )
     let right = ReactDOM.Style.make(~display="flex", ~flexDirection="column", ~width="100%", ())
@@ -785,23 +674,37 @@ module App = {
     let demoContents = ReactDOM.Style.make(~display="flex", ~flex="1", ~flexDirection="column", ())
   }
 
-  type route =
-    | Unit(URLSearchParams.t, string)
+  type commonRoute =
     | Demo(string)
     | Home
 
+  type route =
+    | Unit(URLSearchParams.t, string)
+    | CommonRoute(commonRoute)
+
   @react.component
-  let make = (~demos: Demos.t) => {
+  let make = (
+    ~logo: option<string>,
+    ~demos: Demos.t,
+    ~sortDogs: option<((string, Entity.t), (string, Entity.t)) => int>,
+    ~intro: option<React.element>,
+    ~applyDecorators: (React.element, context) => React.element,
+  ) => {
     let url = RescriptReactRouter.useUrl()
     let urlSearchParams = url.search->URLSearchParams.make
     let route = switch (
       urlSearchParams->URLSearchParams.get("iframe"),
-      urlSearchParams->URLSearchParams.get("demo"),
+      urlSearchParams->URLSearchParams.get("dog"),
     ) {
     | (Some("true"), Some(demoName)) => Unit(urlSearchParams, demoName)
-    | (_, Some(_)) => Demo(url.search)
-    | _ => Home
+    | (_, value) =>
+      switch value {
+      | Some(_) => CommonRoute(Demo(url.search))
+      | None => CommonRoute(Home)
+      }
     }
+    let _sortedDemos =
+      demos->Js.Dict.entries->Belt.SortArray.stableSortBy(((a, _), (b, _)) => String.compare(a, b))
 
     let (loadedIframeWindow: option<Js.t<'a>>, setLoadedIframeWindow) = React.useState(() => None)
 
@@ -816,7 +719,7 @@ module App = {
       LocalStorage.localStorage->LocalStorage.getItem("sidebar")->Option.isSome
     })
 
-    let (responsiveMode, onSetResponsiveMode) = React.useState(() => Desktop)
+    let (responsiveMode, onSetResponsiveMode) = React.useState(() => TopPanel.Desktop)
 
     React.useEffect1(() => {
       if showRightSidebar {
@@ -827,78 +730,76 @@ module App = {
       None
     }, [showRightSidebar])
 
-    let (isCategoriesCollapsedByDefault, toggleIsCategoriesCollapsed) = React.useState(() => {
-      switch LocalStorage.localStorage->LocalStorage.getItem("isCategoriesCollapsedByDefault") {
-      | Some("true") => true
-      | _ => false
-      }
-    })
-
-    let onToggleCollapsedCategoriesByDefault = () => {
-      toggleIsCategoriesCollapsed(_ => !isCategoriesCollapsedByDefault)
-      LocalStorage.localStorage->LocalStorage.setItem(
-        "isCategoriesCollapsedByDefault",
-        !isCategoriesCollapsedByDefault ? "true" : "false",
-      )
-    }
-
     <div name="App" style=Styles.app>
       {switch route {
       | Unit(urlSearchParams, demoName) => {
           let demoUnit = Demos.findDemo(urlSearchParams, demoName, demos)
+
           <div style=Styles.main>
             {demoUnit
-            ->Option.map(demoUnit => <DemoUnit demoUnit />)
+            ->Option.map(demoUnit => <DemoUnit demoUnit applyDecorators />)
             ->Option.getWithDefault("Demo not found"->React.string)}
           </div>
         }
-      | Demo(queryString) => <>
+      | CommonRoute(commonRoute) =>
+        <>
           <DemoListSidebar
+            logo
             demos
+            sortDogs
+            intro={switch intro {
+            | Some(_) => true
+            | None => false
+            }}
             urlSearchParams
-            isCategoriesCollapsedByDefault
-            onToggleCollapsedCategoriesByDefault
           />
-          <div name="Content" style=Styles.right>
-            <TopPanel
-              isSidebarHidden={!showRightSidebar}
-              responsiveMode
-              onRightSidebarToggle={() => {
-                toggleShowRightSidebar(_ => !showRightSidebar)
-                switch loadedIframeWindow {
-                | Some(window) if !showRightSidebar =>
-                  Window.postMessage(window, RightSidebarDisplayed)
-                | None
-                | _ => ()
-                }
-              }}
-              onSetResponsiveMode
-            />
-            <div name="Demo" style=Styles.demo>
-              <div style=Styles.demoContents>
-                <DemoUnitFrame
-                  key={"DemoUnitFrame" ++ iframeKey}
-                  queryString
+          {switch commonRoute {
+          | Demo(queryString) =>
+            <>
+              <div name="Content" style=Styles.right>
+                <TopPanel
+                  isSidebarHidden={!showRightSidebar}
                   responsiveMode
-                  onLoad={iframeWindow => setLoadedIframeWindow(_ => Some(iframeWindow))}
+                  onRightSidebarToggle={() => {
+                    toggleShowRightSidebar(_ => !showRightSidebar)
+                    switch loadedIframeWindow {
+                    | Some(window) if !showRightSidebar =>
+                      Window.postMessage(window, RightSidebarDisplayed)
+                    | None
+                    | _ => ()
+                    }
+                  }}
+                  onSetResponsiveMode
                 />
+                <div name="Demo" style=Styles.demo>
+                  <div style=Styles.demoContents>
+                    <DemoUnitFrame
+                      key={"DemoUnitFrame" ++ iframeKey}
+                      queryString
+                      responsiveMode
+                      onLoad={iframeWindow => setLoadedIframeWindow(_ => Some(iframeWindow))}
+                    />
+                  </div>
+                  {showRightSidebar
+                    ? <Sidebar key={"Sidebar" ++ iframeKey} innerContainerId=rightSidebarId />
+                    : React.null}
+                </div>
               </div>
-              {showRightSidebar
-                ? <Sidebar key={"Sidebar" ++ iframeKey} innerContainerId=rightSidebarId />
-                : React.null}
-            </div>
-          </div>
-        </>
-      | Home => <>
-          <DemoListSidebar
-            demos
-            urlSearchParams
-            isCategoriesCollapsedByDefault
-            onToggleCollapsedCategoriesByDefault
-          />
-          <div style=Styles.empty>
-            <div style=Styles.emptyText> {"Pick a demo"->React.string} </div>
-          </div>
+            </>
+          | Home =>
+            <>
+              <div style=Styles.intro>
+                {switch intro {
+                | Some(intro) =>
+                  <div style={ReactDOM.Style.make(~padding="10px", ~maxWidth="1000px", ())}>
+                    {intro}
+                  </div>
+                | None =>
+                  <div style=Styles.emptyText> {"Pick a demo on the sidebar"->React.string} </div>
+                }}
+              </div>
+            </>
+          }}
         </>
       }}
     </div>

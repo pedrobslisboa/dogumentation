@@ -1,15 +1,14 @@
 open Belt
 
-module URLSearchParams = ReshowcaseUi__Bindings.URLSearchParams
-module HighlightTerms = ReshowcaseUi__HighlightTerms
+module URLSearchParams = Bindings.URLSearchParams
 
 type t = Js.Dict.t<Entity.t>
 
-let rec dig = (demos: t, categories: list<string>, demoName: string) => {
+let rec demo = (demos: t, categories: list<string>, dogName: string) => {
   switch categories {
   | list{} =>
     demos
-    ->Js.Dict.get(demoName)
+    ->Js.Dict.get(dogName)
     ->Option.flatMap(entity =>
       switch entity {
       | Demo(demoUnit) => Some(demoUnit)
@@ -21,14 +20,14 @@ let rec dig = (demos: t, categories: list<string>, demoName: string) => {
     ->Js.Dict.get(categoryName)
     ->Option.flatMap(entity =>
       switch entity {
-      | Category(demos) => dig(demos, categories, demoName)
+      | Category(demos) => demo(demos, categories, dogName)
       | Demo(_) => None
       }
     )
   }
 }
 
-let findDemo = (urlSearchParams: URLSearchParams.t, demoName, demos: t) => {
+let findDemo = (urlSearchParams: URLSearchParams.t, dog, demos: t) => {
   let categories =
     urlSearchParams
     ->URLSearchParams.toArray()
@@ -39,7 +38,7 @@ let findDemo = (urlSearchParams: URLSearchParams.t, demoName, demos: t) => {
     )
     ->List.map(((_categoryNum, categoryName)) => categoryName)
 
-  demos->dig(categories, demoName)
+  demos->demo(categories, dog)
 }
 
 let rec isNestedEntityMatchSearch = (demos: t, searchString) => {

@@ -3,9 +3,11 @@
 .bsb.lock
 npm-debug.log
 /build
-/lib/bs/
-/node_modules/
+**/lib
+**/node_modules/
 *.bs.js
 _esy
 esy.lock
 .vscode/settings.json
+# Dogumantation build
+.dog
