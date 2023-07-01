@@ -1,7 +1,6 @@
 module List = Belt.List
 module String = Js.String2
 module Array = Js.Array2
-module Color = ReshowcaseUi__Layout.Color
 
 type textPart = Marked(string) | Unmarked(string)
 
@@ -17,7 +16,6 @@ let getTermGroups = (~searchString, ~entityName) => {
     if entityName->String.includes(searchString) {
       [[searchString]]
     } else {
-
       let refinedSearchString =
         searchString
         ->String.replaceByRe(%re("/\\s+/g"), " ")
@@ -74,7 +72,7 @@ let mergeRangeIntersections = ranges => {
   mergeRangeIntersections(list{}, ranges)->List.reverse
 }
 
-let compareInt: (int, int) => int = Pervasives.compare
+let compareInt = Pervasives.compare
 
 let getMarkRanges = (text, terms) =>
   terms
@@ -131,11 +129,10 @@ let make = (~text, ~terms) => {
         | Marked(text) =>
           <mark
             key={Belt.Int.toString(index)}
-            style={ReactDOM.Style.make(~backgroundColor=Color.orange, ())}>
+            style={ReactDOM.Style.make(~backgroundColor=Theme.Color.orange, ())}>
             {text->React.string}
           </mark>
-        | Unmarked(text) =>
-          <React.Fragment key={Belt.Int.toString(index)}> {text->React.string} </React.Fragment>
+        | Unmarked(text) => text->React.string
         }
       )
       ->React.array

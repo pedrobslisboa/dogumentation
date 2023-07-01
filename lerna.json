@@ -1,0 +1,12 @@
+{
+  "npmClient": "pnpm",
+  "version": "independent",
+  "packages": [
+    "packages/*"
+  ],
+  "command": {
+    "publish": {
+      "message": "chore(release): publish"
+    }
+  }
+}

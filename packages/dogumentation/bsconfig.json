@@ -1,14 +1,9 @@
 {
-  "name": "docs",
+  "name": "dogumentation",
   "jsx": { "version": 3 },
   "sources": [
     {
-      "dir": "example",
-      "subdirs": true,
-      "type": "dev"
-    },
-    {
-      "dir": ".dogumentation",
+      "dir": "src",
       "subdirs": true
     }
   ],
@@ -22,7 +17,7 @@
   "suffix": ".bs.js",
   "namespace": true,
   "ignored-dirs": ["node_modules", "lib", "vendor", "bs-platform"],
-  "bs-dependencies": ["@rescript/react", "dogumentation", "reskeleton"],
+  "bs-dependencies": ["@rescript/react"],
   "warnings": {
     "number": "+A-4-9-20-102",
     "error": "+A"

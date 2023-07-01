@@ -1,0 +1,35 @@
+{
+  "name": "dogumentation",
+  "version": "0.0.0",
+  "bin": {
+    "dogumentation": "./script/dogumentation.js"
+  },
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "build": "rescript build",
+    "start": "rescript build -w"
+  },
+  "keywords": [
+    "BuckleScript"
+  ],
+  "author": "pedrobslisboa <pedrobslisboa@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@rescript/react": "^0.11.0",
+    "copy-webpack-plugin": "^8.1.0",
+    "html-webpack-plugin": "^5.3.1",
+    "rescript": "^10.1.4",
+    "webpack": "^5.35.1",
+    "webpack-dev-server": "^3.11.2"
+  },
+  "devDependencies": {
+    "create-file-webpack": "^1.0.2",
+    "lerna": "^7.0.2",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  }
+}

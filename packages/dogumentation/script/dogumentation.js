@@ -8,6 +8,7 @@ const os = require("os");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const child_process = require("child_process");
+const glob = require("glob");
 
 const toAbsolutePath = (filepath) => {
   if (path.isAbsolute(filepath)) {
@@ -17,28 +18,11 @@ const toAbsolutePath = (filepath) => {
   }
 };
 
-const getRequiredPathValue = (name) => {
-  const prefix = `--${name}=`;
-  const arg = process.argv.find((item) => item.startsWith(prefix));
-  if (arg === undefined) {
-    console.error(`Please pass ${name} path: ${prefix}...`);
-    process.exit(1);
-  } else {
-    const value = arg.replace(prefix, "");
-    if (value === "") {
-      console.error(`${name} path can't be empty`);
-      process.exit(1);
-    } else {
-      return toAbsolutePath(value);
-    }
-  }
-};
-
 const task = process.argv[2];
 
 if (task !== "build" && task !== "start") {
   console.error(
-    "You need to pass 'start' or 'build' command and path to the entry point.\nFor example: reshowcase start --entry=./example/Demo.bs.js"
+    "You need to pass 'start' or 'build' command and path to the entry point.\nFor example: dogumentation start --entry=./example/Demo.bs.js"
   );
   process.exit(1);
 }
@@ -62,47 +46,126 @@ const useFullframeUrl = (() => {
 
 const isBuild = task === "build";
 
-const entryPath = getRequiredPathValue("entry");
-
-if (!fs.existsSync(entryPath)) {
-  console.error(`Entry file not found here: ${entryPath}`);
-  process.exit(1);
-}
-
 const outputPath = (() => {
   if (isBuild) {
-    return getRequiredPathValue("output");
+    return toAbsolutePath("./.dog");
   } else {
     return os.tmpdir();
   }
 })();
 
-let config;
+let config = {
+  module: {
+    rules: [
+      {
+        test: /\.(png|jpe?g|gif|ico)$/i,
+        use: [
+          {
+            loader: "file-loader",
+          },
+        ],
+      },
+    ],
+  },
+};
+
 try {
-  config = require(path.join(process.cwd(), ".reshowcase/config.js"));
+  const customConfig = require(path.join(
+    process.cwd(),
+    ".dogumentation/config.js"
+  ));
+  config = {
+    ...config,
+    ...customConfig,
+  };
 } catch (err) {
-  config = {};
+  // noop
 }
 
+const docBuildFolder = (() => {
+  let docBuildFolder;
+  if (isBuild) {
+    docBuildFolder = path.join(process.cwd(), ".dog");
+  } else {
+    docBuildFolder = path.join(os.tmpdir(), ".dog");
+  }
+
+  if (!fs.existsSync(docBuildFolder)) {
+    fs.mkdirSync(docBuildFolder);
+  }
+
+  return docBuildFolder;
+})();
+
+const entrypointPath = `${docBuildFolder}/entrypoint.js`;
+
+const addDocToGitIgnore = () => {
+  const gitIgnorePath = path.join(process.cwd(), ".gitignore");
+
+  if (!fs.existsSync(gitIgnorePath)) {
+    fs.writeFileSync(gitIgnorePath, docBuildFolder);
+  } else {
+    const gitIgnoreContent = fs.readFileSync(gitIgnorePath, "utf8");
+
+    if (!gitIgnoreContent.includes(docBuildFolder)) {
+      fs.appendFileSync(gitIgnorePath, "\n# Dogumentation build folder\n.dog");
+    }
+  }
+};
+
+const copyRescriptDocs = () => {
+  const rescriptDocsFiles = [];
+
+  glob
+    .sync("**/*_dog.*.js", {
+      ignore: ["**/lib/**", "**/.dog/**", "**/node_modules/**"],
+    })
+    .forEach(function (file) {
+      rescriptDocsFiles.push(file);
+    });
+
+  const importData = rescriptDocsFiles.reduce((acc, file) => {
+    acc += `import "${path.join(process.cwd())}/${file}";\n`;
+    return acc;
+  }, "");
+
+  try {
+    fs.writeFileSync(entrypointPath, importData);
+    const mainFile = glob.sync("**/.dogumentation/Main.*.js")[0];
+
+    if (!mainFile) {
+      fs.appendFileSync(
+        entrypointPath,
+        `import * as Dogumentation from "${process.cwd()}/node_modules/dogumentation/src/Config.bs.js";\nDogumentation.start();`
+      );
+    } else {
+      fs.appendFileSync(
+        entrypointPath,
+        `import "${process.cwd()}/${mainFile}";\n`
+      );
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+copyRescriptDocs();
+
 const compiler = webpack({
-  // https://github.com/webpack/webpack-dev-server/issues/2758#issuecomment-813135032
-  // target: "web" (probably) can be removed after upgrading to webpack-dev-server v4
   target: "web",
   mode: isBuild ? "production" : "development",
-  entry: {
-    index: entryPath,
-  },
+  entry: entrypointPath,
   output: {
     path: outputPath,
-    filename: "reshowcase[fullhash].js",
+    filename: "dogumentation[fullhash].js",
     globalObject: "this",
-    chunkLoadingGlobal: "reshowcase__d",
+    chunkLoadingGlobal: "dogumentation__d",
   },
   module: config.module,
   plugins: [
     ...(config.plugins ? config.plugins : []),
     new CopyWebpackPlugin({
-      patterns: [{ from: path.join(__dirname, "../src/favicon.png"), to: "" }],
+      patterns: [{ from: path.join(__dirname, "../src/favicon.ico"), to: "" }],
     }),
     new HtmlWebpackPlugin({
       filename: "index.html",
@@ -126,7 +189,7 @@ const compiler = webpack({
 });
 
 if (isBuild) {
-  console.log("Building reshowcase bundle...");
+  console.log("Building dogumentation bundle...");
   compiler.run((err, _result) => {
     if (err) {
       console.error(err);
@@ -155,16 +218,16 @@ if (isBuild) {
     ...(config.devServer || {}),
   });
 
-  ['SIGINT', 'SIGTERM'].forEach((signal) => {
+  ["SIGINT", "SIGTERM"].forEach((signal) => {
     process.on(signal, () => {
       if (server) {
         server.close(() => {
           process.exit();
-        })
+        });
       } else {
         process.exit();
       }
-    })
+    });
   });
 
   if (config.devServer && config.devServer.socket) {
