@@ -1,0 +1,11 @@
+.DS_Store
+.merlin
+.bsb.lock
+npm-debug.log
+/build
+/lib/bs/
+/node_modules/
+*.bs.js
+_esy
+esy.lock
+.vscode/settings.json

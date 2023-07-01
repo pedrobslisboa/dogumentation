@@ -1,0 +1,30 @@
+{
+  "name": "reshowcase",
+  "reason": {
+    "react-jsx": 3
+  },
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    },
+    {
+      "dir": "example",
+      "subdirs": true
+    }
+  ],
+  "package-specs": [
+    {
+      "module": "es6",
+      "in-source": true
+    },
+    "commonjs"
+  ],
+  "suffix": ".bs.js",
+  "namespace": true,
+  "bs-dependencies": ["@rescript/react"],
+  "warnings": {
+    "number": "+A-4-9-20-102",
+    "error": "+A"
+  }
+}

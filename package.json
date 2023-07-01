@@ -1,0 +1,33 @@
+{
+  "name": "reshowcase",
+  "version": "5.2.0",
+  "bin": {
+    "reshowcase": "./commands/reshowcase"
+  },
+  "scripts": {
+    "build-bsb": "bsb -make-world",
+    "clean": "bsb -clean-world",
+    "start-bsb": "bsb -make-world -w",
+    "start": "bsb -clean-world && bsb -make-world; concurrently --names 'wp,bs' -c 'bgBlue.bold,bgGreen.bold' 'bsb -make-world -w' './commands/reshowcase start --entry=./example/Demo.bs.js'",
+    "build": "bsb -clean-world && bsb -make-world && rm -r build ; ./commands/reshowcase build --entry=./example/Demo.bs.js --output=./build",
+    "test": "node ./lib/js/src/tests/HighlightTermsTest.bs.js"
+  },
+  "keywords": [
+    "BuckleScript"
+  ],
+  "author": "bloodyowl <mlbli@me.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@rescript/react": ">=0.10.0",
+    "copy-webpack-plugin": "^8.1.0",
+    "html-webpack-plugin": "^5.3.1",
+    "webpack": "^5.35.1",
+    "webpack-dev-server": "^3.11.2"
+  },
+  "devDependencies": {
+    "bs-platform": "^9.0.2",
+    "concurrently": "^6.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  }
+}
