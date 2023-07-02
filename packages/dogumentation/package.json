@@ -1,6 +1,6 @@
 {
   "name": "dogumentation",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "bin": {
     "dogumentation": "./script/dogumentation.js"
   },
@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "create-file-webpack": "^1.0.2",
+    "file-loader": "^6.2.0",
     "lerna": "^7.0.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
