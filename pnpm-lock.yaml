@@ -23,9 +23,6 @@ importers:
       dogumentation:
         specifier: '*'
         version: link:packages/dogumentation
-      file-loader:
-        specifier: ^6.2.0
-        version: 6.2.0(webpack@5.35.1)
       lerna:
         specifier: ^7.0.2
         version: 7.0.2
@@ -66,6 +63,9 @@ importers:
       create-file-webpack:
         specifier: ^1.0.2
         version: 1.0.2
+      file-loader:
+        specifier: ^6.2.0
+        version: 6.2.0(webpack@5.35.1)
       lerna:
         specifier: ^7.0.2
         version: 7.0.2
