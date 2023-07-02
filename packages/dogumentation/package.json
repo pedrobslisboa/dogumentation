@@ -1,6 +1,6 @@
 {
   "name": "dogumentation",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "bin": {
     "dogumentation": "./script/dogumentation.js"
   },
@@ -15,21 +15,19 @@
   "author": "pedrobslisboa <pedrobslisboa@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@rescript/react": "^0.11.0",
     "copy-webpack-plugin": "^8.1.0",
     "html-webpack-plugin": "^5.3.1",
     "rescript": "^10.1.4",
     "webpack": "^5.35.1",
-    "webpack-dev-server": "^3.11.2"
-  },
-  "devDependencies": {
+    "webpack-dev-server": "^3.11.2",
     "create-file-webpack": "^1.0.2",
     "file-loader": "^6.2.0",
-    "lerna": "^7.0.2",
+    "@rescript/react": "^0.11.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },
-  "peerDependencies": {
+  "devDependencies": {
+    "lerna": "^7.0.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   }
