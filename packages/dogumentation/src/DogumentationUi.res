@@ -461,10 +461,7 @@ module DemoUnit = {
     Window.window["parent"]["document"]["getElementById"](. rightSidebarId)->Js.Nullable.toOption
 
   @react.component
-  let make = (
-    ~demoUnit: Controls.demoUnitProps => React.element,
-    ~applyDecorators: (React.element, context) => React.element,
-  ) => {
+  let make = (~demoUnit: Controls.demoUnitProps => React.element) => {
     let (parentWindowRightSidebarElem, setParentWindowRightSidebarElem) = React.useState(() => None)
 
     React.useEffect0(() => {
@@ -572,7 +569,7 @@ module DemoUnit = {
     }
 
     <div name="DemoUnit" style=Styles.container>
-      <div style=Styles.contents> {applyDecorators(demoUnit(props), {controls: props})} </div>
+      <div style=Styles.contents> {demoUnit(props)} </div>
       {switch parentWindowRightSidebarElem {
       | None => React.null
       | Some(element) =>
@@ -739,7 +736,11 @@ module App = {
 
           <div style=Styles.main>
             {demoUnit
-            ->Option.map(demoUnit => <DemoUnit demoUnit applyDecorators />)
+            ->Option.map(demoUnit =>
+              <DemoUnit
+                demoUnit={controls => applyDecorators(demoUnit(controls), {controls: controls})}
+              />
+            )
             ->Option.getWithDefault("Demo not found"->React.string)}
           </div>
         }
