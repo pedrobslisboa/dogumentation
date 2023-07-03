@@ -223,15 +223,17 @@ module DemoListSidebar = {
       <PaddedBox gap=Md border=Bottom>
         {switch logo {
         | Some(source) =>
-          <img
-            style={ReactDOM.Style.make(
-              ~maxHeight="70px",
-              ~maxWidth="100%",
-              ~marginBottom="10px",
-              (),
-            )}
-            src={source}
-          />
+          <div style={ReactDOM.Style.make(~display="flex", ~justifyContent="center", ())}>
+            <img
+              style={ReactDOM.Style.make(
+                ~maxHeight="70px",
+                ~maxWidth="100%",
+                ~marginBottom="10px",
+                (),
+              )}
+              src={source}
+            />
+          </div>
         | None => React.null
         }}
         <div style={ReactDOM.Style.make(~display="flex", ~alignItems="center", ~gridGap="5px", ())}>

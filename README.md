@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="./logo.png" alt="Dogumentation" width="400" />  
+  <img src="https://github.com/pedrobslisboa/dogumentation/blob/main/logo.png" alt="Dogumentation" width="400" />  
 </h1>
 
 A collection of tools to create do~g~cumentation for your rescript projects.
