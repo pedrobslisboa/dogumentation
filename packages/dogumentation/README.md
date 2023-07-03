@@ -177,7 +177,6 @@ start(~config, ())
 
 ## Roadmap
 
-- [ ] Decorators for categories
 - [ ] Props available on decorators
 - [ ] Tests
 - [ ] Faster bundler

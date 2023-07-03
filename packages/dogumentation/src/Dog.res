@@ -1,6 +1,21 @@
 type rec addFunctions = {
   addDog: (string, Controls.demoUnitProps => React.element) => unit,
-  addToSubCategory: (string, addFunctions => unit) => unit,
+  addToSubCategory: (
+    string,
+    addFunctions => unit,
+    ~decorators: array<(React.element, DogumentationUi.context) => React.element>=?,
+    unit,
+  ) => unit,
+}
+
+let decorateStory = (
+  decorators,
+  dog: React.element,
+  context: DogumentationUi.context,
+): React.element => {
+  decorators->Js.Array.reduce((acc, decorator) => {
+    decorator(acc, context)
+  }, dog, _)
 }
 
 let rootMap: Demos.t = Js.Dict.empty()
@@ -12,6 +27,9 @@ let internalAddDemo = (demoName: string, demoUnit: Controls.demoUnitProps => Rea
 let rec internaladdToCategory = (
   categoryName: string,
   func: addFunctions => unit,
+  ~decorators as internalDecorators: option<
+    array<(React.element, DogumentationUi.context) => React.element>,
+  >=?,
   ~prevMap: Demos.t,
 ) => {
   let category = ref(Js.Dict.empty())
@@ -26,15 +44,52 @@ let rec internaladdToCategory = (
   }
 
   let newAddDemo = (demoName: string, demoUnit: Controls.demoUnitProps => React.element) => {
-    category.contents->Js.Dict.set(demoName, Demo(demoUnit))
+    let decorators = switch internalDecorators {
+    | Some(decorators) => decorators
+    | None => []
+    }
+
+    category.contents->Js.Dict.set(
+      demoName,
+      Demo(
+        controls => {
+          decorateStory(decorators, demoUnit(controls), {controls: controls})
+        },
+      ),
+    )
   }
 
   let newFunctions = {
     addDog: newAddDemo,
-    addToSubCategory: (a, b) => internaladdToCategory(a, b, ~prevMap=category.contents),
+    addToSubCategory: (a, b, ~decorators=[], ()) => {
+      Js.log2(
+        a,
+        Belt.Array.concatMany([
+          switch internalDecorators {
+          | Some(value) => value
+          | None => []
+          },
+          decorators,
+        ]),
+      )
+
+      internaladdToCategory(
+        a,
+        b,
+        ~decorators=Belt.Array.concatMany([
+          switch internalDecorators {
+          | Some(value) => value
+          | None => []
+          },
+          decorators,
+        ]),
+        ~prevMap=category.contents,
+      )
+    },
   }
 
   func(newFunctions)
 }
 
-let addToCategory = (a, b) => internaladdToCategory(a, b, ~prevMap=rootMap)
+let addToCategory = (a, b, ~decorators=[], ()) =>
+  internaladdToCategory(a, b, ~decorators, ~prevMap=rootMap)
