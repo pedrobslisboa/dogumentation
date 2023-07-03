@@ -13,6 +13,13 @@
     "BuckleScript"
   ],
   "author": "pedrobslisboa <pedrobslisboa@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pedrobslisboa/dogumentation",
+    "directory": "packages/dogumentation"
+  },
+  "description": "Build a dogumentation for you Rescript React components",
+  "homepage": "https://github.com/pedrobslisboa/dogumentation",
   "license": "MIT",
   "dependencies": {
     "copy-webpack-plugin": "^8.1.0",
