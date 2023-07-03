@@ -45,7 +45,7 @@ importers:
   packages/dogumentation:
     dependencies:
       '@rescript/react':
-        specifier: ^0.11.0
+        specifier: ^0.11
         version: 0.11.0(react-dom@18.1.0)(react@18.1.0)
       copy-webpack-plugin:
         specifier: ^8.1.0
@@ -59,15 +59,6 @@ importers:
       html-webpack-plugin:
         specifier: ^5.3.1
         version: 5.3.1(webpack@5.35.1)
-      react:
-        specifier: ^18.0.0
-        version: 18.1.0
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.1.0(react@18.1.0)
-      rescript:
-        specifier: ^10.1.4
-        version: 10.1.4
       webpack:
         specifier: ^5.35.1
         version: 5.35.1
@@ -78,6 +69,15 @@ importers:
       lerna:
         specifier: ^7.0.2
         version: 7.0.2
+      react:
+        specifier: ^18.0.0
+        version: 18.1.0
+      react-dom:
+        specifier: ^18.0.0
+        version: 18.1.0(react@18.1.0)
+      rescript:
+        specifier: ^10.1.4
+        version: 10.1.4
 
 packages:
 
@@ -5318,6 +5318,7 @@ packages:
     resolution: {integrity: sha512-FFKlS9AG/XrLepWsyw7B+A9DtQBPWEPDPDKghV831Y2KGbie+eeFBOS0xtRHp0xbt7S0N2Dm6hhX+kTZQ/3Ybg==}
     hasBin: true
     requiresBuild: true
+    dev: true
 
   /reskeleton@0.7.1(@rescript/react@0.11.0)(react@18.1.0):
     resolution: {integrity: sha512-vqYhrytcQ3wcnZw7XVPuOcY3zOhua4juLm8v7yl69MpRvv4tqrSb3aLGqUP/ecp3FkTqaz+o/KNBYe5ZC7tSdQ==}
