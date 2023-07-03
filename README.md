@@ -6,7 +6,7 @@ A collection of tools to create do~g~cumentation for your rescript projects.
 
 ## Packages
 
-- [dogumentation](./packages/dogumentation/README.md) - The main package, contains the core of the project.
+- [dogumentation](./packages/dogumentation) - The main package, contains the core of the project.
 
 ## TODO
 
