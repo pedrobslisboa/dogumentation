@@ -26,7 +26,7 @@ let make = (~title: React.element, ~initialValue=false, ~children) => {
 
   <div>
     <div style=Styles.clickableArea onClick={_event => setIsOpen(isOpen => !isOpen)}>
-      {triangleIcon( isOpen)}
+      {triangleIcon(isOpen)}
       title
     </div>
     {isOpen ? children : React.null}

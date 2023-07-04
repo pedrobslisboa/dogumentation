@@ -28,7 +28,7 @@ let start = (~config=configInitialValue, ()) => {
         <DogumentationUi.App
           logo=config.logo
           demos=Dog.rootMap
-          intro=intro
+          intro
           sortDogs=config.sortDogs
           applyDecorators={switch config.decorators {
           | Some(decorators) => decorateStory(decorators)

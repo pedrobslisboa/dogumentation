@@ -7,10 +7,11 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "build": "rescript build",
-    "start": "rescript build -w"
+    "start": "rescript build -w",
+    "format": "rescript format -all"
   },
   "keywords": [
-    "BuckleScript"
+    "rescript"
   ],
   "author": "pedrobslisboa <pedrobslisboa@gmail.com>",
   "repository": {

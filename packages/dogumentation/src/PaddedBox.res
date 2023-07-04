@@ -31,6 +31,12 @@ module Styles = {
 }
 
 @react.component
-let make = (~gap: Theme.Gap.t=Xs, ~padding: padding=Around, ~border: border=None, ~id=?, ~children) => {
+let make = (
+  ~gap: Theme.Gap.t=Xs,
+  ~padding: padding=Around,
+  ~border: border=None,
+  ~id=?,
+  ~children,
+) => {
   <div name="PaddedBox" ?id style={Styles.make(~padding, ~border, ~gap)}> children </div>
 }
