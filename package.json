@@ -17,10 +17,12 @@
     "packages/*"
   ],
   "devDependencies": {
+    "@mdx-js/loader": "^2.3.0",
     "@rescript/react": "^0.11.0",
     "bs-platform": "^9.0.2",
     "concurrently": "^6.0.0",
     "cross-env": "^7.0.3",
+    "css-loader": "^6.8.1",
     "dogumentation": "*",
     "file-loader": "^6.2.0",
     "husky": "^8.0.3",
@@ -28,7 +30,10 @@
     "lint-staged": "^13.2.3",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "react-svg-loader": "^3.0.3",
     "rescript": "^10.1.4",
-    "reskeleton": "^0.7.1"
+    "reskeleton": "^0.7.1",
+    "style-loader": "^3.3.3",
+    "svg-inline-loader": "^0.8.2"
   }
 }

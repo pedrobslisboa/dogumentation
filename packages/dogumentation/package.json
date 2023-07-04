@@ -4,6 +4,10 @@
   "bin": {
     "dogumentation": "./script/dogumentation.js"
   },
+  "exports": {
+    "./dogx": "./src/dogx",
+    "./": "./"
+  },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "build": "rescript build",
@@ -23,15 +27,21 @@
   "homepage": "https://github.com/pedrobslisboa/dogumentation",
   "license": "MIT",
   "dependencies": {
+    "@mdx-js/loader": "^2.3.0",
     "copy-webpack-plugin": "^8.1.0",
     "create-file-webpack": "^1.0.2",
+    "css-loader": "^6.8.1",
     "file-loader": "^6.2.0",
+    "highlight.js": "^10.5.0",
     "html-webpack-plugin": "^5.3.1",
+    "react-element-to-jsx-string": "^15.0.0",
+    "react-syntax-highlighter": "^15.5.0",
+    "style-loader": "^3.3.3",
     "webpack": "^5.35.1",
     "webpack-dev-server": "^3.11.2"
   },
   "devDependencies": {
-    "lerna": "^7.0.2",
+    "@rescript/react": "^0.11",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "rescript": "^10.1.4"
@@ -39,7 +49,6 @@
   "peerDependencies": {
     "@rescript/react": "^0.11",
     "react": "^18",
-    "react-dom": "^18",
-    "rescript": "^10"
+    "react-dom": "^18"
   }
 }

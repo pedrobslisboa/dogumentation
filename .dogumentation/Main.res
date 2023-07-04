@@ -33,6 +33,7 @@ let sortDogs = ((a, entity), (b, _)) => {
     } else {
       String.compare(a, b)
     }
+  | _ => 0
   }
 }
 
@@ -42,9 +43,7 @@ let config: config = {
   logo,
   decorators: [
     (dog, _) => {
-      <div>
-        {dog}
-      </div>
+      <div> {dog} </div>
     },
   ],
 }

@@ -11,3 +11,5 @@ esy.lock
 .vscode/settings.json
 # Dogumantation build
 .dog
+dist
+dogumentation/dogx

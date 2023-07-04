@@ -1,7 +1,3 @@
-type responsiveMode =
-  | Mobile
-  | Desktop
-
 module Styles = {
   let panel = ReactDOM.Style.make(
     ~display="flex",
@@ -48,12 +44,8 @@ module Styles = {
 }
 
 @react.component
-let make = (
-  ~isSidebarHidden: bool,
-  ~responsiveMode: responsiveMode,
-  ~onRightSidebarToggle: unit => unit,
-  ~onSetResponsiveMode: (responsiveMode => responsiveMode) => unit,
-) => {
+let make = () => {
+  let (_, responsiveMode, changeResponsiveMode) = ResponsiveContext.useResponsiveContext()
   <div style=Styles.panel>
     <div style=Styles.rightSection />
     <div style=Styles.middleSection>
@@ -64,7 +56,7 @@ let make = (
             style={responsiveMode == Desktop ? Styles.activeButton : Styles.button}
             onClick={event => {
               event->ReactEvent.Mouse.preventDefault
-              onSetResponsiveMode(_ => Desktop)
+              changeResponsiveMode(Desktop)
             }}>
             {Icon.desktop}
           </button>
@@ -73,31 +65,9 @@ let make = (
             style={responsiveMode == Mobile ? Styles.activeButton : Styles.button}
             onClick={event => {
               event->ReactEvent.Mouse.preventDefault
-              onSetResponsiveMode(_ => Mobile)
+              changeResponsiveMode(Mobile)
             }}>
             {Icon.mobile}
-          </button>
-        </div>
-      </PaddedBox>
-    </div>
-    <div style=Styles.rightSection>
-      <PaddedBox gap=Md>
-        <div style=Styles.buttonGroup>
-          <button
-            title={isSidebarHidden ? "Show sidebar" : "Hide sidebar"}
-            style=Styles.squareButton
-            onClick={event => {
-              event->ReactEvent.Mouse.preventDefault
-              onRightSidebarToggle()
-            }}>
-            <div
-              style={ReactDOM.Style.make(
-                ~transition="200ms ease-in-out transform",
-                ~transform=isSidebarHidden ? "rotate(0)" : "rotate(180deg)",
-                (),
-              )}>
-              {Icon.sidebar}
-            </div>
           </button>
         </div>
       </PaddedBox>

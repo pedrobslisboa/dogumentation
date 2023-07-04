@@ -37,6 +37,12 @@ let make = (
   ~border: border=None,
   ~id=?,
   ~children,
+  ~style=ReactDOM.Style.make(),
 ) => {
-  <div name="PaddedBox" ?id style={Styles.make(~padding, ~border, ~gap)}> children </div>
+  <div
+    name="PaddedBox"
+    ?id
+    style={ReactDOM.Style.combine(Styles.make(~padding, ~border, ~gap), style)}>
+    children
+  </div>
 }

@@ -6,6 +6,7 @@ type rec addFunctions = {
     ~decorators: array<(React.element, DogumentationUi.context) => React.element>=?,
     unit,
   ) => unit,
+  addDogx: (string, unit => React.element) => unit,
 }
 
 let decorateStory = (
@@ -59,20 +60,13 @@ let rec internaladdToCategory = (
     )
   }
 
+  let addDogx = (dogxName: string, dogxUnit: unit => React.element) => {
+    category.contents->Js.Dict.set(dogxName, Dogx(dogxUnit, category.contents))
+  }
+
   let newFunctions = {
     addDog: newAddDemo,
     addToSubCategory: (a, b, ~decorators=[], ()) => {
-      Js.log2(
-        a,
-        Belt.Array.concatMany([
-          switch internalDecorators {
-          | Some(value) => value
-          | None => []
-          },
-          decorators,
-        ]),
-      )
-
       internaladdToCategory(
         a,
         b,
@@ -86,6 +80,7 @@ let rec internaladdToCategory = (
         ~prevMap=category.contents,
       )
     },
+    addDogx,
   }
 
   func(newFunctions)

@@ -1,5 +1,4 @@
 open Belt
-
 module URLSearchParams = Bindings.URLSearchParams
 
 type t = Js.Dict.t<Entity.t>
@@ -12,7 +11,8 @@ let rec demo = (demos: t, categories: list<string>, dogName: string) => {
     ->Option.flatMap(entity =>
       switch entity {
       | Demo(demoUnit) => Some(demoUnit)
-      | Category(_) => None
+      | Dogx(dogxUnit, dogs) => Some(_ => <Dogxment dogs={dogs}> {dogxUnit()} </Dogxment>)
+      | _ => None
       }
     )
   | list{categoryName, ...categories} =>
@@ -21,7 +21,7 @@ let rec demo = (demos: t, categories: list<string>, dogName: string) => {
     ->Option.flatMap(entity =>
       switch entity {
       | Category(demos) => demo(demos, categories, dogName)
-      | Demo(_) => None
+      | _ => None
       }
     )
   }
@@ -49,6 +49,7 @@ let rec isNestedEntityMatchSearch = (demos: t, searchString) => {
       HighlightTerms.getMatchingTerms(~searchString, ~entityName)->Array.size > 0
     switch entity {
     | Demo(_) => isEntityNameMatchSearch
+    | Dogx(_) => isEntityNameMatchSearch
     | Category(demos) => isEntityNameMatchSearch || isNestedEntityMatchSearch(demos, searchString)
     }
   })

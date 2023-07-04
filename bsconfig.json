@@ -16,8 +16,7 @@
     {
       "module": "es6",
       "in-source": true
-    },
-    "commonjs"
+    }
   ],
   "suffix": ".bs.js",
   "namespace": true,

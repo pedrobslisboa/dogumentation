@@ -1,0 +1,50 @@
+import { Dogx, SourceCode } from "dogumentation/dogx";
+
+# Dogx sample
+
+Here you can use MDX and also custom Dogumentation MDX components. Checkout the <a target="_blank" href="https://github.com/pedrobslisboa/dogumentation/tree/main/example/Dogx.mdx">Dogx.mdx</a> file to see how it's done.
+
+## Adding a dogx
+
+<SourceCode highlightLines={[{start:6}]}>
+```res
+@module("./Buttons.mdx")
+external buttonsMdx: unit => React.element = "default"
+
+addToCategory(
+  "Dogs",
+  ({addDog, addDogx}) => {
+    addDogx("Doc", buttonsMdx)
+
+    addDog(...)
+  },
+  (),
+)
+```
+</SourceCode>
+
+## Dogx
+
+You can use the `Dogx` component to render a dog.
+
+### With controls
+
+<Dogx dog="With controls" />
+
+### Without controls
+
+<Dogx dog="Without controls" />
+
+## SourceCode
+
+You can use the `SourceCode` component to render a code block.
+
+<SourceCode>
+```res
+// ./Buttons.mdx
+import { Dogx, SourceCode } from "dogumentation/dogx";
+
+<Dogx dog="Basic" />
+```
+
+</SourceCode>
