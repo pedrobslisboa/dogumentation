@@ -31,7 +31,7 @@ let start = (~config=configInitialValue, ()) => {
           intro
           sortDogs=config.sortDogs
           applyDecorators={switch config.decorators {
-          | Some(decorators) => decorateStory(decorators)
+          | Some(decorators) => (dog, context) => decorateStory(decorators, dog, context)
           | None => (dog, _) => dog
           }}
         />,

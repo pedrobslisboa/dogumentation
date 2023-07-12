@@ -1,3 +1,7 @@
+// rescript@11 compatibility
+@module("react")
+external useCallback1: ('f, array<'a>) => 'f = "useCallback"
+
 type numberConfig<'a> = {
   min: 'a,
   max: 'a,
@@ -99,19 +103,13 @@ let useControls = onInit => {
     },
   )
 
-  let onStringChange = React.useCallback1(
-    (name, value) => dispatch(SetString(name, value)),
-    [dispatch],
-  )
+  let onStringChange = useCallback1((name, value) => Js.log(SetString(name, value)), [dispatch])
 
-  let onIntChange = React.useCallback1((name, value) => dispatch(SetInt(name, value)), [dispatch])
+  let onIntChange = useCallback1((name, value) => dispatch(SetInt(name, value)), [dispatch])
 
-  let onFloatChange = React.useCallback1(
-    (name, value) => dispatch(SetFloat(name, value)),
-    [dispatch],
-  )
+  let onFloatChange = useCallback1((name, value) => dispatch(SetFloat(name, value)), [dispatch])
 
-  let onBoolChange = React.useCallback1((name, value) => dispatch(SetBool(name, value)), [dispatch])
+  let onBoolChange = useCallback1((name, value) => dispatch(SetBool(name, value)), [dispatch])
 
   {
     state,

@@ -32,7 +32,6 @@
     "react-dom": "^18.0.0",
     "react-svg-loader": "^3.0.3",
     "rescript": "^10.1.4",
-    "reskeleton": "^0.7.1",
     "style-loader": "^3.3.3",
     "svg-inline-loader": "^0.8.2"
   }

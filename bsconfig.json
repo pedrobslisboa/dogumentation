@@ -21,7 +21,7 @@
   "suffix": ".bs.js",
   "namespace": true,
   "ignored-dirs": ["node_modules", "lib", "vendor", "bs-platform"],
-  "bs-dependencies": ["@rescript/react", "dogumentation", "reskeleton"],
+  "bs-dependencies": ["@rescript/react", "dogumentation"],
   "warnings": {
     "number": "+A-4-9-20-102",
     "error": "+A"
