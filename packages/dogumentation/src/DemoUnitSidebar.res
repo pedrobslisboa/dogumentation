@@ -81,13 +81,7 @@ let make = (
   ~orientation=#horizontal,
 ) =>
   <PaddedBox
-    style={ReactDOM.Style.make(
-      ~backgroundColor=Theme.Color.lightGray,
-      ~borderTop=`1px solid ${Theme.Color.midGray}`,
-      ~height="100%",
-      (),
-    )}
-    gap=Md>
+    style={ReactDOM.Style.make(~backgroundColor=Theme.Color.lightGray, ~height="100%", ())} gap=Md>
     <Stack
       style={switch orientation {
       | #horizontal =>

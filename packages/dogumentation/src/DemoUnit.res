@@ -5,6 +5,7 @@ module Styles = {
       ~flexGrow="1",
       ~overflowY="auto",
       ~padding="20px",
+      ~boxSizing="border-box",
       ~backgroundColor=Theme.Color.white,
       ~margin="auto",
       ~height="100%",

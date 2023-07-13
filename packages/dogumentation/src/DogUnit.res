@@ -8,10 +8,11 @@ module Styles = {
   )
 }
 
-let getRightSidebarElement = (): option<Dom.element> =>
-  Bindings.Window.Iframe.contentWindow()["document"]["body"]["querySelector"](.
-    "#controls-root",
-  )->Js.Nullable.toOption
+@val @scope(("window", "parent")) external document: Dom.element = "document"
+@send
+external querySelector: (Dom.element, string) => Js.Nullable.t<Dom.element> = "querySelector"
+@set
+external setInnerHTML: (Dom.element, string) => string = "innerHTML"
 
 @react.component
 let make = (~demoUnit: Controls.demoUnitProps => React.element, ~controlsOrientation=#vertical) => {
@@ -80,10 +81,60 @@ let make = (~demoUnit: Controls.demoUnitProps => React.element, ~controlsOrienta
         style={ReactDOM.Style.make(~width=style.width, ~height=style.height, ~margin="auto", ())}>
         <DemoUnit demo={demoUnit(props)} />
       </div>
-      {switch hasControls {
-      | false => React.null
-      | true =>
+    </div>
+    {switch (
+      hasControls,
+      showControls,
+      document->querySelector("#controls-root")->Js.Nullable.toOption,
+    ) {
+    | (false, _, _) => React.null
+    | (true, show, Some(elem)) =>
+      ReactDOM.createPortal(
+        <>
+          <button
+            name="show-controls"
+            style={ReactDOM.Style.make(
+              ~whiteSpace="nowrap",
+              ~position="absolute",
+              ~bottom="100%",
+              ~right="0",
+              ~border="none",
+              ~borderTop="1px solid rgba(38, 85, 115, 0.15)",
+              ~borderLeft="1px solid rgba(38, 85, 115, 0.15)",
+              ~backgroundColor="rgb(255, 255, 255)",
+              ~borderRadius="5px 0px 0px 0px",
+              ~padding="5px 13px",
+              ~cursor="pointer",
+              (),
+            )}
+            onClick={_ => setShowControls(prev => !prev)}
+            className="relative">
+            {switch show {
+            | false => "Show Controls"->React.string
+            | true => "Hide Controls"->React.string
+            }}
+          </button>
+          {switch show {
+          | true =>
+            <DemoUnitSidebar
+              strings=state.strings
+              ints=state.ints
+              floats=state.floats
+              bools=state.bools
+              onStringChange={onStringChange}
+              onIntChange={onIntChange}
+              onFloatChange={onFloatChange}
+              onBoolChange={onBoolChange}
+            />
+          | _ => React.null
+          }}
+        </>,
+        elem,
+      )
+    | (true, show, None) =>
+      <>
         <button
+          name="show-controls"
           style={ReactDOM.Style.make(
             ~position="absolute",
             ~top="0",
@@ -99,27 +150,26 @@ let make = (~demoUnit: Controls.demoUnitProps => React.element, ~controlsOrienta
           )}
           onClick={_ => setShowControls(prev => !prev)}
           className="relative">
-          {switch showControls {
+          {switch show {
           | false => "Show Controls"->React.string
           | true => "Hide Controls"->React.string
           }}
         </button>
-      }}
-    </div>
-    {switch (hasControls, showControls) {
-    | (_, false) => React.null
-    | (false, _) => React.null
-    | (_, true) =>
-      <DemoUnitSidebar
-        strings=state.strings
-        ints=state.ints
-        floats=state.floats
-        bools=state.bools
-        onStringChange={onStringChange}
-        onIntChange={onIntChange}
-        onFloatChange={onFloatChange}
-        onBoolChange={onBoolChange}
-      />
+        {switch show {
+        | true =>
+          <DemoUnitSidebar
+            strings=state.strings
+            ints=state.ints
+            floats=state.floats
+            bools=state.bools
+            onStringChange={onStringChange}
+            onIntChange={onIntChange}
+            onFloatChange={onFloatChange}
+            onBoolChange={onBoolChange}
+          />
+        | _ => React.null
+        }}
+      </>
     }}
   </div>
 }

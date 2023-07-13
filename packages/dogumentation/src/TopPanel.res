@@ -43,9 +43,10 @@ module Styles = {
   let rightSection = ReactDOM.Style.make(~display="flex", ())
 }
 
+type responsiveMode = Desktop | Mobile
+
 @react.component
-let make = () => {
-  let (_, responsiveMode, changeResponsiveMode) = ResponsiveContext.useResponsiveContext()
+let make = (~onChangeResposiveMode, ~responsiveMode) => {
   <div style=Styles.panel>
     <div style=Styles.rightSection />
     <div style=Styles.middleSection>
@@ -56,7 +57,7 @@ let make = () => {
             style={responsiveMode == Desktop ? Styles.activeButton : Styles.button}
             onClick={event => {
               event->ReactEvent.Mouse.preventDefault
-              changeResponsiveMode(Desktop)
+              onChangeResposiveMode(Desktop)
             }}>
             {Icon.desktop}
           </button>
@@ -65,7 +66,7 @@ let make = () => {
             style={responsiveMode == Mobile ? Styles.activeButton : Styles.button}
             onClick={event => {
               event->ReactEvent.Mouse.preventDefault
-              changeResponsiveMode(Mobile)
+              onChangeResposiveMode(Mobile)
             }}>
             {Icon.mobile}
           </button>

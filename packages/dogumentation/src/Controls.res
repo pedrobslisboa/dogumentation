@@ -103,7 +103,7 @@ let useControls = onInit => {
     },
   )
 
-  let onStringChange = useCallback1((name, value) => Js.log(SetString(name, value)), [dispatch])
+  let onStringChange = useCallback1((name, value) => dispatch(SetString(name, value)), [dispatch])
 
   let onIntChange = useCallback1((name, value) => dispatch(SetInt(name, value)), [dispatch])
 

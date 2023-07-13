@@ -12,7 +12,6 @@ module Border = Theme.Border
 module BorderRadius = Theme.BorderRadius
 module FontSize = Theme.FontSize
 module URLSearchParams = Bindings.URLSearchParams
-module Window = Bindings.Window
 module LocalStorage = Bindings.LocalStorage
 module Array = Js.Array2
 
@@ -306,6 +305,7 @@ module DemoUnitFrame = {
       ~display="flex",
       ~justifyContent="center",
       ~alignItems="center",
+      ~backgroundColor=Color.midGray,
       ~height="1px",
       ~overflowY="auto",
       (),
@@ -314,12 +314,22 @@ module DemoUnitFrame = {
   let useFullframeUrl: bool = %raw(`typeof USE_FULL_IFRAME_URL === "boolean" ? USE_FULL_IFRAME_URL : false`)
 
   @react.component
-  let make = (~queryString: string) => {
+  let make = (~queryString: string, ~responsiveMode=TopPanel.Desktop) => {
     let iframePath = useFullframeUrl ? "/demo/index.html" : "/demo"
     <div name="DemoUnitFrame" style={container()}>
       <iframe
         src={`${iframePath}?iframe=true&${queryString}`}
-        style={ReactDOM.Style.make(~height="100%", ~width="100%", ~border="none", ())}
+        style={ReactDOM.Style.make(
+          ~border="none",
+          ~height="100%",
+          ~width={
+            switch responsiveMode {
+            | Mobile => "375px"
+            | Desktop => "100%"
+            }
+          },
+          (),
+        )}
       />
     </div>
   }
@@ -373,6 +383,7 @@ module App = {
     ~intro: option<React.element>,
     ~applyDecorators: (React.element, context) => React.element,
   ) => {
+    let (responsiveMode, setResponsiveMode) = React.useState(() => TopPanel.Desktop)
     let url = RescriptReactRouter.useUrl()
     let urlSearchParams = url.search->URLSearchParams.make
     let route = switch (
@@ -406,10 +417,10 @@ module App = {
             let demoUnit = Demos.findDemo(urlSearchParams, demoName, demos)
 
             <div style=Styles.main>
-              <TopPanel />
               {demoUnit
               ->Option.map(demoUnit =>
                 <DogUnit
+                  key="demoName"
                   demoUnit={controls => applyDecorators(demoUnit(controls), {controls: controls})}
                 />
               )
@@ -445,10 +456,20 @@ module App = {
             | Demo(queryString) =>
               <>
                 <div name="Content" style=Styles.right>
+                  <TopPanel
+                    responsiveMode onChangeResposiveMode={mode => setResponsiveMode(_ => mode)}
+                  />
                   <div name="Demo" style=Styles.demo>
                     <div style=Styles.demoContents>
-                      <DemoUnitFrame key={"DemoUnitFrame" ++ iframeKey} queryString />
+                      <DemoUnitFrame
+                        responsiveMode key={"DemoUnitFrame" ++ iframeKey} queryString
+                      />
                     </div>
+                    <div
+                      key={"DemoUnitFrame" ++ iframeKey}
+                      style={ReactDOM.Style.make(~position="relative", ())}
+                      id="controls-root"
+                    />
                   </div>
                 </div>
               </>

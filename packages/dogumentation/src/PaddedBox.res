@@ -3,9 +3,11 @@ type padding = Around | LeftRight | TopLeftRight
 type border = None | Bottom
 
 module Styles = {
-  let around = gapValue => ReactDOM.Style.make(~padding=gapValue, ())
-  let leftRight = gapValue => ReactDOM.Style.make(~padding=`0 ${gapValue}`, ())
-  let topLeftRight = gapValue => ReactDOM.Style.make(~padding=`${gapValue} ${gapValue} 0`, ())
+  let around = gapValue => ReactDOM.Style.make(~padding=gapValue, ~boxSizing="border-box", ())
+  let leftRight = gapValue =>
+    ReactDOM.Style.make(~padding=`0 ${gapValue}`, ~boxSizing="border-box", ())
+  let topLeftRight = gapValue =>
+    ReactDOM.Style.make(~padding=`${gapValue} ${gapValue} 0`, ~boxSizing="border-box", ())
 
   let getPadding = (padding: padding, gap: Theme.Gap.t) => {
     let gapValue = Theme.Gap.getGap(gap)
